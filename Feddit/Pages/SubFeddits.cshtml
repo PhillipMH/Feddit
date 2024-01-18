@@ -2,13 +2,19 @@
 @model Feddit.Pages.SubFedditsModel
 @{
 }
-<h1>SubFeddits</h1>
+<h1 >SubFeddits</h1>
 @foreach (var subfeddits in Model.SubFeddits)
 {
     <center>
-        <div class="Subfeddit-box">
-            <div class="subfedditname"@subfeddits.SubFedditName></div>
-            <div class="createdday" @subfeddits.TimeCreated></div>
+        <div class="Subfeddit-box" onclick="redirectToSubfeddit('@subfeddits.SubFedditName')">
+            <div class="subfedditname">@subfeddits.SubFedditName</div>
+            <div class="createdday">@subfeddits.TimeCreated</div>
         </div>
     </center>
 }
+
+<script>
+    function redirectToSubfeddit(subfedditName) {
+        window.location.href = '/Posts/' + subfedditName;
+    }
+</script>

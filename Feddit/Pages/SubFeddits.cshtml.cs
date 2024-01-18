@@ -15,7 +15,8 @@ namespace Feddit.Pages
         [BindProperty]
         public string SubFedditName { get; set; }
         [BindProperty]
-        public DateTime SubFedditCreatedAt { get; set; } = DateTime.Now;
+        public DateTime SubFedditCreatedAt { get; set; }
+        [BindProperty]
         public List<SubFeddits> SubFeddits { get; set; }
         public async Task OnGet()
         {

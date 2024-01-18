@@ -1,0 +1,11 @@
+﻿@page
+@model Feddit.Pages.CreateSubFedditModel
+@{
+}
+<form method="post">
+    <div class="textboxes">
+        <input  asp-for="name"/>
+        <input  asp-for="creationdate" type="hidden"/>
+        <button type="submit">submit</button>
+    </div>
+</form>

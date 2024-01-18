@@ -147,6 +147,8 @@ namespace Feddit_Domain.Connections
                 Console.WriteLine(e);
                 throw;
             }
+            finally { _sqlConnection.Close(); }
+
         }
         public async Task<List<SubFeddits>> GetAllSubFeddits()
         {
