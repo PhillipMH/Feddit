@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using Feddit_Domain.Models;
+using System.ComponentModel;
 
 namespace Feddit_Domain.Connections
 {
@@ -40,30 +41,54 @@ namespace Feddit_Domain.Connections
             }
             finally { _sqlConnection.Close(); }
         }
-        public async Task GetUserByMail(string mail)
+        public async Task<Users> GetUserByMail(string mail)
         {
             SqlCommand command = await MySqlCommand("spGetUserInfoByUserEmail");
             command.Parameters.AddWithValue("@Mail", mail);
+            try
+            {
+                _sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Users user = new Users(
+                            reader.GetGuid("UserID"),
+                            reader.GetString("Mail"),
+                            reader.GetString("Name"),
+                            reader.GetString("Password"),
+                            reader.GetBoolean("IsDeleted"),
+                            reader.GetBoolean("SuperAdmin"));
+                    return await Task.FromResult(user);
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally { _sqlConnection.Close(); }
+            return await Task.FromResult<Users>(null);
         }
-        public async Task UpdateUser(Users user)
+        public async Task<Users>UpdateUser(Users user)
         {
             SqlCommand command = await MySqlCommand("spUpdateUser");
             command.Parameters.AddWithValue("@UserId", user.UserId);
-            command.Parameters.AddWithValue("@Email", user.Email);
-            command.Parameters.AddWithValue("@Password", user.Password);
+            command.Parameters.AddWithValue("@Mail", user.Email);
             command.Parameters.AddWithValue("@Name", user.Name);
+            command.Parameters.AddWithValue("@Password", user.Password);
             command.Parameters.AddWithValue("@IsDeleted", user.IsDeleted);
-            command.Parameters.AddWithValue("@SuperAdmin", user.admin);
+            command.Parameters.AddWithValue("@SuperAdmin", user.Admin);
             try
             {
                 _sqlConnection.Open();
                 command.ExecuteNonQuery();
             }
             finally { _sqlConnection.Close(); }
+            return null;
         }
-        public async Task DeleteUserById(int id)
+        public async Task DeleteUserById(Guid id)
         {
-            SqlCommand command = await MySqlCommand("spDeleteUserById");
+            SqlCommand command = await MySqlCommand("spDeleteUser");
             command.Parameters.AddWithValue("@userid", id);
             try
             {
@@ -72,7 +97,82 @@ namespace Feddit_Domain.Connections
             }
             finally { _sqlConnection.Close(); }
         }
+        public async Task<Users> LoginUsers(string email, string password)
+        {
+            SqlCommand command = await MySqlCommand("SPLoginUser");
+            command.Parameters.AddWithValue("@Mail", email);
+            command.Parameters.AddWithValue("@Password", password);
+            try
+            {
+                _sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (email == reader.GetString("Mail") && password == reader.GetString("Password"))
+                    {
+                        Users userinfo = new Users(reader.GetGuid("UserID"),
+                            reader.GetString("Mail"),
+                            reader.GetString("Name"),
+                            reader.GetString("Password"),
+                            reader.GetBoolean("IsDeleted"),
+                            reader.GetBoolean("SuperAdmin"));
+                        return userinfo;
+                    }
+                    if (email != reader.GetString("Mail") || password != reader.GetString("Password"))
+                    {
+                        return new();
+                    }
+                }
 
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally { _sqlConnection.Close(); }
+            return new();
+        }
+        public async Task CreateSubfeddit(string subfedditname, DateTime currenttime)
+        {
+            SqlCommand command = await MySqlCommand("SPCreateSubfeddit");
+            command.Parameters.AddWithValue("@SubfedditName", subfedditname);
+            command.Parameters.AddWithValue("@SubfedditCreatedAt", currenttime);
+            try
+            {
+                _sqlConnection.Open();
+                command.ExecuteNonQueryAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        public async Task<List<SubFeddits>> GetAllSubFeddits()
+        {
+            List<SubFeddits> temp = new List<SubFeddits>();
+            SqlCommand command = await MySqlCommand("SPGetAllSubFeddits");
+            try
+            {
+                _sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read()) 
+                {
+                    SubFeddits temp2 = new();
+                    temp2.SubFedditId = reader.GetGuid("SubFedditId");
+                    temp2.SubFedditName = reader.GetString("SubFedditName");
+                    temp2.TimeCreated = reader.GetDateTime("SubFedditCreatedAt");
+                    temp.Add(temp2);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally { _sqlConnection.Close(); }
+            return temp;
+        }
 
     }
 }

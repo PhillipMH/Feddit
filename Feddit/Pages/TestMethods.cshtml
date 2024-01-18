@@ -1,0 +1,62 @@
+﻿@page
+@model Feddit.Pages.TestMethodsModel
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Page</title>
+</head>
+<body>
+
+    <h1>Testing ASP.NET Core Methods</h1>
+
+    <h2>Create User</h2>
+    <form method="">
+        <label for="mail">Mail:</label>
+        <input type="email" asp-for="Email" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" asp-for="password" required>
+        <br>
+        <label for="name">Name:</label>
+        <input type="text" asp-for="name" required>
+        <br>
+        <button type="submit">Create User</button>
+    </form>
+
+    <h2>Get User By Mail</h2>
+    <form method="post">
+        <label for="getMail">Mail:</label>
+        <input type="email" asp-for="Email" required>
+        <br>
+        <button type="submit">Get User</button>
+    </form>
+    @if (Model.Email != null)
+    {
+        <h3>@Model.Email</h3>
+        <h3>@Model.UserId</h3>
+        <h3>@Model.password</h3>
+        <h3>@Model.name</h3>
+    }
+
+    <h2>Update User</h2>
+    <form method="" action="/your-controller/update-user">
+        <!-- Include input fields for updating a user -->
+        <!-- You can use the same structure as the Create User form -->
+        <button type="submit">Update User</button>
+    </form>
+
+    <h2>Delete User</h2>
+    <form method="" action="/your-controller/delete-user">
+        <label for="deleteUserId">User ID:</label>
+        <input type="text" id="deleteUserId" name="deleteUserId" required>
+        <br>
+        <button type="submit">Delete User</button>
+    </form>
+
+</body>
+</html>

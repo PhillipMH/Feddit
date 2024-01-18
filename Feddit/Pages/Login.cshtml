@@ -1,0 +1,62 @@
+﻿@page
+@model Feddit.Pages.LoginModel
+@{
+}
+@if (string.IsNullOrWhiteSpace(HttpContext.Session.GetString("email")))
+{
+    <center style="margin-top: 70px;">
+        <div class="container">
+            <h2>Teacher Login</h2>
+            <div style="margin: auto">
+                <form asp-page-handler="login" method="post">
+                    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                    <div class="form-group row">
+                        <div class="col-5">
+                            <div class="field-holder">
+                                <input type="text" asp-for="Email" id="Email" style="margin-left: 485px;" required />
+                                <label for="Email" style="margin-left: 487px; margin-top: 3px;">Email</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" style="margin-top: 4px;">
+                        <div class="col-5">
+                            <div class="field-holder">
+                                <input type="password" asp-for="Password" id="Password" style="margin-left: 485px;" required />
+                                <label for="Password" style="margin-left: 487px;margin-top: 3px;">Password</label>
+                                <i class="fa fa-eye-slash toggle-password" id="togglePassword" style="margin-left: 790px; margin-top: 18px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-2" style="margin-top: 15px;">
+                            <button type="submit" class="loginbutton">Login</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </center>
+
+}
+@if (!string.IsNullOrWhiteSpace(HttpContext.Session.GetString("email")))
+{
+
+}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('Password');
+        const togglePassword = document.getElementById('togglePassword');
+
+        togglePassword.addEventListener('click', function () {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                togglePassword.classList.remove('fa-eye-slash');
+                togglePassword.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                togglePassword.classList.remove('fa-eye');
+                togglePassword.classList.add('fa-eye-slash');
+            }
+        });
+    });
+</script>

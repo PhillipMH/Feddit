@@ -3,8 +3,51 @@
 @{
     ViewData["Title"] = "Home page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<link rel="stylesheet" href="~/css/FedditHomesite.css" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<div class="container">
+    <div class="section-container">
+        <section class="section-1">
+            <span class="planettopright">
+                <img src="https://www.redditinc.com/assets/images/site/homepage/Homepage_Snoo_Right@2x.png" alt="planet" width="450">
+            </span>
+            <div class="text-block" style="margin-top: 20px;">
+                <div class="logo-holder">
+                    <a href="/Posts"><img src="https://www.redditinc.com/assets/images/site/homepage/reddit-icon.svg" alt="Feddit" width="72" height="72"></a>
+                </div>
+                <div class="text-header">
+                    <p>Dive Into Anything</p>
+                </div>
+                <div class="text">
+                    <p>
+                        Feddit is home to thousands of communities, endless<br />
+                        conversation, and authentic human connection. Whether you're<br />
+                        into breaking news, sports, TV fan theories, or a never-ending<br />
+                        stream of the internet's cutest animals, there's a community on<br />
+                        Feddit for you.
+                    </p>
+                    <span class="planetbotleft">
+                        <img src="https://www.redditinc.com/assets/images/site/homepage/Homepage_Snoo_Left@2x.png" alt="planet" width="400">
+                    </span>
+                    <a href="#section-2" class="down-arrow smooth-links">Go down</a>
+                </div>
+            </div>
+        </section>
+        <section class="section-2" id="section-2" style="margin-bottom: 500px;">
+        <div class="text-block">
+            <div class="text-header" style="margin-top: 500px;">
+                <p>
+                    How Does Feddit Work?
+                </p>
+            </div>
+            <div class="text">
+                Every day, barely anyone around the world post, vote, and comment in<br />
+                communities organized around their interests.
+            </div>
+            <div class="btn-light">
+                <a href="/Posts" class="btn">Visit Feddit</a>
+            </div>
+        </div>
+        </section>
+    </div>
 </div>

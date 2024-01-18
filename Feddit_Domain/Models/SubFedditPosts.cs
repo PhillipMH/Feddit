@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Feddit_Domain.Models
         public string PostContent { get; set; }
         public string PostPic { get; set; }
         public DateTime CurrentTime { get; set; }
-
-
+        public Users UserId { get; set; }
+        public SubFeddits SubFedditId { get; set; } 
     }
 }
