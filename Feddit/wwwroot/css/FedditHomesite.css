@@ -1,0 +1,44 @@
+﻿body {
+    background-color: #ff4500;
+}
+.container {
+    overflow: hidden;
+}
+.text-header {
+    font-size: 70px;
+    margin-bottom: 28px;
+}
+.text-block{
+    font-weight: bold;
+    text-align: center;
+}
+.logo-holder {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    margin-top: 125px;
+}
+.logo-holder a img {
+    max-width: 100px;
+    max-height: 100px;
+}
+.text {
+    font-size: 20px;
+}
+.planettopright {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: flex-end;
+    max-height: 600px;
+    max-width: 1200px;
+    z-index: 0;
+}
+.planetbotleft {
+    display: flex;
+    justify-content: flex-start;
+    position: absolute;
+    left: 0;
+}

@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feddit", "Feddit\Feddit.csproj", "{0AA7124A-B2E1-4A21-BB01-9745272EBFDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feddit", "Feddit\Feddit.csproj", "{0AA7124A-B2E1-4A21-BB01-9745272EBFDE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feddit_Domain", "Feddit_Domain\Feddit_Domain.csproj", "{99F015A2-9491-40EF-B25C-4647DBCEC8EA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feddit_Services", "Feddit_Library\Feddit_Services.csproj", "{45649E75-48C8-447E-BAE4-02D405661ED7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{0AA7124A-B2E1-4A21-BB01-9745272EBFDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AA7124A-B2E1-4A21-BB01-9745272EBFDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AA7124A-B2E1-4A21-BB01-9745272EBFDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99F015A2-9491-40EF-B25C-4647DBCEC8EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99F015A2-9491-40EF-B25C-4647DBCEC8EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99F015A2-9491-40EF-B25C-4647DBCEC8EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99F015A2-9491-40EF-B25C-4647DBCEC8EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45649E75-48C8-447E-BAE4-02D405661ED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45649E75-48C8-447E-BAE4-02D405661ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45649E75-48C8-447E-BAE4-02D405661ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45649E75-48C8-447E-BAE4-02D405661ED7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

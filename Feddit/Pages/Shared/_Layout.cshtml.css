@@ -6,6 +6,9 @@ a.navbar-brand {
   text-align: center;
   word-break: break-all;
 }
+nav{
+    z-index:1;
+}
 
 a {
   color: #0077cc;

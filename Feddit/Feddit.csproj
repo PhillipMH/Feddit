@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Feddit_Domain\Feddit_Domain.csproj" />
+    <ProjectReference Include="..\Feddit_Library\Feddit_Services.csproj" />
+  </ItemGroup>
+
 </Project>

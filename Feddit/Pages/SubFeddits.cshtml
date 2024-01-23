@@ -1,0 +1,21 @@
+﻿@page
+@model Feddit.Pages.SubFedditsModel
+@{
+}
+<h1 >SubFeddits</h1>
+<button class="btn-primary" onclick="window.location.href='/CreateSubFeddits'">Create a subfeddit</button>
+@foreach (var subfeddits in Model.SubFeddits)
+{
+    <center>
+        <div class="Subfeddit-box" onclick="redirectToSubfeddit('@subfeddits.SubFedditName')">
+            <div class="subfedditname">@subfeddits.SubFedditName</div>
+            <div class="createdday">@subfeddits.TimeCreated</div>
+        </div>
+    </center>
+}
+
+<script>
+    function redirectToSubfeddit(subfedditName) {
+        window.location.href = '/Posts/' + subfedditName;
+    }
+</script>

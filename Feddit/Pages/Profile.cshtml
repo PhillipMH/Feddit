@@ -1,0 +1,48 @@
+﻿@page
+@model Feddit.Pages.ProfileModel
+@{
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/css/ProfilePage.css" />
+    <title>User Profile</title>
+</head>
+<body>
+
+    <div class="profile-container">
+        <div class="profile-picture">
+            <!-- Default profile picture or user-uploaded image goes here -->
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png" alt="Profile Picture">
+        </div>
+
+        <div class="username">
+            <!-- Display the username -->
+            @Model.Name
+        </div>
+
+        <div class="upload-btn-wrapper">
+            <button class="btn">Upload a Profile Picture</button>
+            <input type="file" name="myfile" />
+        </div>
+        <div class="upload-btn-wrapper">
+            <a href="/UpdateUser" class="btn">Edit user information</a>
+        </div>
+    </div>
+    <div class="comments">
+        @if (ModelState.Any())
+        {
+            @foreach (var comments in Model.commentlist)
+            {
+               <span style="margin-top: 25px;">@comments.CommentTitle</span>
+                    <span>@comments.CommentContent</span>
+                    <span>@comments.CurrentTime</span>
+            }
+        }
+     
+    </div>
+
+</body>
+</html>
