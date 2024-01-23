@@ -40,16 +40,19 @@ namespace Feddit.Pages
             AccountName = founduser.Name;
             }
         }
-        public async Task<IActionResult> OnPostupdateForm(string mail)
+        public async Task<IActionResult> OnPostUpdateForm(string mail)
         {
             mail = HttpContext.Session.GetString("Mail");
-            Users user = await _connection.GetUserByMail(mail);
+            if (string.IsNullOrWhiteSpace(mail))
+            {
+                return NotFound();
+            }
+            Users user = await _connection.GetUserByMail(mail.Trim());
                 user.Email = Mail;
                 user.Password = Password;
                 user.Name = AccountName;
                 user.Admin = IsAdmin;
                 user.IsDeleted = IsDeleted;
-                
             Users updateduser = new Users();
             updateduser = await _connection.UpdateUser(user);
             if (updateduser != null)
@@ -58,7 +61,7 @@ namespace Feddit.Pages
             }
             return Page();
         }
-        public async Task OnPost(Guid id, string mail)
+        public async Task OnPostDeleteUser(Guid id, string mail)
         {
             mail = HttpContext.Session.GetString("Mail");
             Users user = await _connection.GetUserByMail(mail);

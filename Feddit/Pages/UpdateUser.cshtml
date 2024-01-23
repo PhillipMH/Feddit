@@ -18,7 +18,7 @@
 
     <h2>Update User Information</h2>
 
-    <form method="post" asp-page-handler="updateForm">
+    <form method="post">
         <label for="mail">Mail:</label>
         <input type="email" asp-for="Mail" name="mail" value="@Model.Mail" required>
 
@@ -29,14 +29,14 @@
         <label for="AccountName">AccountName:</label>
         <input type="text" asp-for="AccountName" value="@Model.AccountName" required>
 
-        <button type="submit" style="margin-top: 5px;">Update</button>
-    </form>
+        <button type="submit" style="margin-top: 5px;" asp-page-handler="UpdateForm">Update</button>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Delete Account</button>
+    </form>
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Delte user</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Delete user</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -46,8 +46,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                        <form method="post">
-                        <button type="submit" class="btn btn-danger">Delete account</button>
+                        <form method="post" >
+                        <button type="submit" class="btn btn-danger" asp-page-handler="DeleteUser" >Delete account</button>
                         </form>
                     </div>
                 </div>

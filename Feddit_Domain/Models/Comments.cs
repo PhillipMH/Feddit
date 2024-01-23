@@ -10,10 +10,12 @@ namespace Feddit_Domain.Models
     public class Comments
     {
         public Guid CommentId { get; set; }
+        [MaxLength(75)]
+        public string CommentTitle { get; set; }
         [MaxLength(500)]
         public string CommentContent { get; set; }
         public DateTime CurrentTime { get; set; }
-        public SubFedditPosts PostId { get; set; }
-        public Users UserId { get; set; }
+        public Guid PostId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

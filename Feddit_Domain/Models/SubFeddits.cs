@@ -14,5 +14,12 @@ namespace Feddit_Domain.Models
         [MaxLength(75)]
         public string SubFedditName { get; set; }
         public DateTime TimeCreated { get; set; }
+        public SubFeddits() { }
+        public SubFeddits(Guid subFedditId, string subFedditName, DateTime timeCreated)
+        {
+            SubFedditId = subFedditId;
+            SubFedditName = subFedditName;
+            TimeCreated = timeCreated;
+        }
     }   
 }

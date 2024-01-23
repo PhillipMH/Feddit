@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Data;
 using Feddit_Domain.Models;
 using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace Feddit_Domain.Connections
 {
@@ -37,7 +38,7 @@ namespace Feddit_Domain.Connections
             try
             {
                 _sqlConnection.Open();
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
             }
             finally { _sqlConnection.Close(); }
         }
@@ -140,7 +141,7 @@ namespace Feddit_Domain.Connections
             try
             {
                 _sqlConnection.Open();
-                command.ExecuteNonQueryAsync();
+                await command.ExecuteNonQueryAsync();
             }
             catch (Exception e)
             {
@@ -175,6 +176,190 @@ namespace Feddit_Domain.Connections
             finally { _sqlConnection.Close(); }
             return temp;
         }
+        public async Task<List<SubFedditPosts>> GetAllSubfedditPosts(Guid SubFedditId)
+        {
+            
+            List<SubFedditPosts> temp = new List<SubFedditPosts>();
+            SqlCommand command = await MySqlCommand("SPGetAllSubFedditPosts");
+            command.Parameters.AddWithValue("@SubFedditId", SubFedditId);
+            try
+            {
+                _sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    SubFedditPosts temp2 = new();
+                    temp2.PostId = reader.GetGuid("PostId"); 
+                    temp2.UserId = reader.GetGuid("UserId");
+                    temp2.SubFedditId = reader.GetGuid("SubFedditId");
+                    temp2.PostPic = reader.IsDBNull(reader.GetOrdinal("PicturePath")) ? null : reader.GetString("PicturePath");
+                    temp2.PostTitle = reader.GetString("Title");
+                    temp2.PostContent = reader.GetString("Content");
+                    temp2.DateCreated = reader.GetDateTime("CreatedAt");
+                    temp.Add(temp2);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally { _sqlConnection.Close(); }
+            return temp;
+        }
+        public async Task<SubFeddits> GetSubFedditByName(string subfedditname)
+        {
+            SqlCommand command = await MySqlCommand("SPGetSubfedditByName");
+            command.Parameters.AddWithValue("@SubFedditName", subfedditname);
+            try
+            {
+                _sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    SubFeddits subfeddit = new SubFeddits(
+                        reader.GetGuid("SubFedditId"),
+                        reader.GetString("SubFedditName"),
+                        reader.GetDateTime("SubFedditCreatedAt")
+                        );
+                    return subfeddit;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally { _sqlConnection.Close(); }
+            return await Task.FromResult<SubFeddits>(null);
+        }
+        public async Task<SubFedditPosts> GetPostById(Guid PostId)
+        {
+            SqlCommand command = await MySqlCommand("SPGetPostById");
+            command.Parameters.AddWithValue("@PostId", PostId);
+            try
+            {
+                _sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while(reader.Read())
+                {
+                    SubFedditPosts temp = new SubFedditPosts(
+                        reader.GetGuid("PostId"),
+                        reader.GetGuid("UserId"),
+                        reader.GetGuid("SubFedditId"),
+                        reader.IsDBNull(reader.GetOrdinal("PicturePath")) ? null : reader.GetString("PicturePath"),
+                        reader.GetString("Title"),
+                        reader.GetString("Content"),
+                        reader.GetDateTime("CreatedAt"));
+                    return temp;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally { _sqlConnection.Close(); }
+            return await Task.FromResult<SubFedditPosts>(null);
+        }
+        public async Task<Comments> CommentOnPost(Guid postid, Guid userid, string content, DateTime createdat)
+        {
+            SqlCommand command = await MySqlCommand("SpAddComment");
+            command.Parameters.AddWithValue("@PostID", postid);
+            command.Parameters.AddWithValue("@UserID", userid);
+            command.Parameters.AddWithValue("@Content", content);
+            command.Parameters.AddWithValue("@CreatedAt", createdat);
+            try
+            {
+                _sqlConnection.Open();
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally {_sqlConnection.Close(); }
+            return new();
+        }
+        public async Task<SubFedditPosts> AddPostToSubFeddit(Guid userid, Guid subfedditid, string title, string content )
+        {
+            SqlCommand command = await MySqlCommand("SPAddSubFedditPost");
+            command.Parameters.AddWithValue("@UserId", userid);
+            command.Parameters.AddWithValue("@SubFedditId", subfedditid);
+            command.Parameters.AddWithValue("@Title",title);
+            command.Parameters.AddWithValue("@Content", content );
+            try
+            {
+                _sqlConnection.Open();
+                command.ExecuteNonQueryAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally { _sqlConnection.Close(); }
+            return new();
+        }
+        public async Task<List<Comments>> GetAllCommentsAsync(Guid postid)
+        {
+            List<Comments> temp = new List<Comments>();
+            SqlCommand command = await MySqlCommand("SPGetAllCommentsOnPost");
+            command.Parameters.AddWithValue("@PostId", postid);
+            try
+            {
+                _sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Comments temp2 = new();
+                    temp2.CommentId = reader.GetGuid("CommentID");
+                    temp2.PostId = reader.GetGuid("PostID");
+                    temp2.UserId = reader.GetGuid("UserID");
+                    temp2.CommentTitle = reader.GetString("CommentTitle");
+                    temp2.CommentContent = reader.GetString("Content");
+                    temp2.CurrentTime = reader.GetDateTime("CreatedAt");
+                    temp.Add(temp2);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally { _sqlConnection.Close(); }
+            return temp;
+        }
+        public async Task<List<Comments>> GetAllCommentsFromSpecificUserAsync(Guid Userid)
+        {
+            List<Comments> temp = new List<Comments>();
+            SqlCommand command = await MySqlCommand("SPGetAllCommentsFromUser");
+            command.Parameters.AddWithValue("@userid", Userid);
+            try
+            {
+                _sqlConnection.Open();
 
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Comments temp2 = new();
+                    temp2.CommentId = reader.GetGuid("CommentID");
+                    temp2.PostId = reader.GetGuid("PostID");
+                    temp2.UserId = reader.GetGuid("UserID");
+                    temp2.CommentTitle = reader.GetString("CommentTitle");
+                    temp2.CommentContent = reader.GetString("Content");
+                    temp2.CurrentTime = reader.GetDateTime("CreatedAt");
+                    temp.Add(temp2);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally { _sqlConnection.Close(); }
+            return temp;
+        }
     }
 }

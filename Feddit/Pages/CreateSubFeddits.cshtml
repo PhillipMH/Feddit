@@ -1,0 +1,14 @@
+﻿@page
+@model Feddit.Pages.CreateSubFedditsModel
+@{
+}
+<div class="container">
+    <form method="post">
+
+    <h3>Create new subfeddit</h3>
+         <label>SubFedditName</label>
+        <input type="text" class="form-control mt-1" asp-for="name" style="margin-bottom: 3px;" required/>
+        <button type="submit" class="btn-primary">Create subfeddit</button>
+    </form>
+        <button class="btn-danger" onclick="window.location.href='/SubFeddits'">Cancel</button>
+</div>

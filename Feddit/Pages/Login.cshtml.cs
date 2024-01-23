@@ -31,6 +31,7 @@ namespace Feddit.Pages
             {
                 LoginSuccess = false;
                 errormessage = "Mail or Password incorrect";
+                return null;
             }
             Users founduser = await _connection.LoginUsers(email, password);
             if (founduser is null)

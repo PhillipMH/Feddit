@@ -28,8 +28,20 @@
             <input type="file" name="myfile" />
         </div>
         <div class="upload-btn-wrapper">
-            <a href="/UpdateUser"><button class="btn" href="/UpdateUser">Edit user information</button></a>
+            <a href="/UpdateUser" class="btn">Edit user information</a>
         </div>
+    </div>
+    <div class="comments">
+        @if (ModelState.Any())
+        {
+            @foreach (var comments in Model.commentlist)
+            {
+               <span style="margin-top: 25px;">@comments.CommentTitle</span>
+                    <span>@comments.CommentContent</span>
+                    <span>@comments.CurrentTime</span>
+            }
+        }
+     
     </div>
 
 </body>

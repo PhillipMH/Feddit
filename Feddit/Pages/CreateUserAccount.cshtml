@@ -1,0 +1,19 @@
+﻿@page
+@model Feddit.Pages.CreateUserAccountModel
+@{
+}
+<form method="post">
+    <h3>Create new user account</h3>
+    <div class="container">
+        <label>Email</label>
+        <input type="email" class="form-control mt-1" asp-for="Mail" required/>
+        <label>Username</label>
+        <input type="text" class="form-control mt-1" asp-for="AccountUsername" required/>
+        <label>Password</label>
+        <input type="password" class="form-control mt-1" asp-for="Password" required />
+        <label>Confirm Password</label>
+        <input type="password" class="form-control mt-1" asp-for="ConfirmPassword" style="margin-bottom: 10px;" required/>
+        <button type="submit" class="btn-primary">Create account</button>
+        <button class="btn-danger" onclick="window.location.href='/Login'">Cancel</button>
+    </div>
+</form>

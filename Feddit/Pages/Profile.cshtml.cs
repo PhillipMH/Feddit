@@ -13,9 +13,17 @@ namespace Feddit.Pages
             _connection = connection;
         }
         [BindProperty]
+        public string commenttitle { get; set; }
+        [BindProperty]
+        public string commentcontent { get; set; }
+        [BindProperty]
         public string Mail { get; set; }
         [BindProperty]
         public string Name { get; set; }
+        [BindProperty]
+        public List<Comments> commentlist { get; set; }
+        [BindProperty]
+        public Guid Userid { get; set; }
         public async void OnGet(string mail)
         {
             mail = HttpContext.Session.GetString("Mail");
@@ -28,6 +36,10 @@ namespace Feddit.Pages
             {
                 Mail = founduser.Email;
                 Name = founduser.Name;
+                Users temp = await _connection.GetUserByMail(Mail);
+                Userid = temp.UserId;
+                commentlist = await _connection.GetAllCommentsFromSpecificUserAsync(Userid);
+                
             }
         }
     }

@@ -1,0 +1,25 @@
+﻿@page "{PostId}"
+@model Feddit.Pages.PostModel
+@{
+}
+<div class="PostInfo">
+    <center>
+        <h3>@Model.Title</h3>
+        <span>@Model.Content</span>
+    </center>
+</div>
+<div class="comments" style="margin-top: 200px;">
+    <center>
+        <h1>Comments</h1>
+        <button style="margin-bottom: 10px;">Comment On Post</button>
+        @foreach (var commentsonpost in Model.Comments)
+        {
+            <div class="comment-box" style="margin-top: 25px; border: 1px solid #ddd; padding: 10px; max-width: 500px;">
+                <div class="commenttitle">@commentsonpost.CommentTitle</div>
+                <div class="commentcontent">@commentsonpost.CommentContent</div>
+                <div class="timecreated">@commentsonpost.CurrentTime</div>
+            </div>
+        }
+
+    </center>
+</div>

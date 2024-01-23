@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Feddit.Pages
 {
-    public class CreateSubFedditModel : PageModel
+    public class CreateSubFedditsModel : PageModel
     {
         private readonly Connection _connection;
-        public CreateSubFedditModel(Connection connection)
+        public CreateSubFedditsModel(Connection connection)
         {
             _connection = connection;
         }
@@ -20,7 +20,11 @@ namespace Feddit.Pages
         }
         public async Task OnPost()
         {
+            if (!string.IsNullOrWhiteSpace(name))
+            {
             await _connection.CreateSubfeddit(name, creationdate);
+            }
+
 
         }
     }
