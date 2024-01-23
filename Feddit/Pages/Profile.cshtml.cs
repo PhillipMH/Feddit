@@ -24,6 +24,8 @@ namespace Feddit.Pages
         public List<Comments> commentlist { get; set; }
         [BindProperty]
         public Guid Userid { get; set; }
+        [BindProperty]
+        public List<SubFedditPosts> postslist { get; set; }
         public async void OnGet(string mail)
         {
             mail = HttpContext.Session.GetString("Mail");
@@ -39,6 +41,7 @@ namespace Feddit.Pages
                 Users temp = await _connection.GetUserByMail(Mail);
                 Userid = temp.UserId;
                 commentlist = await _connection.GetAllCommentsFromSpecificUserAsync(Userid);
+                postslist = await _connection.GetAllPostsFromSpecificUserAsync(Userid);
                 
             }
         }

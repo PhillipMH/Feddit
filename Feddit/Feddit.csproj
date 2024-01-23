@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Feddit_Domain\Feddit_Domain.csproj" />
     <ProjectReference Include="..\Feddit_Library\Feddit_Services.csproj" />
   </ItemGroup>

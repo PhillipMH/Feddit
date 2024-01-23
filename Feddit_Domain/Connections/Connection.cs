@@ -361,5 +361,33 @@ namespace Feddit_Domain.Connections
             finally { _sqlConnection.Close(); }
             return temp;
         }
+        public async Task<List<SubFedditPosts>> GetAllPostsFromSpecificUserAsync(Guid Userid)
+        {
+            List<SubFedditPosts> temp = new List<SubFedditPosts>();
+            SqlCommand command = await MySqlCommand("SPGetAllPostsFromUser");
+            command.Parameters.AddWithValue("@userid", Userid);
+            try
+            {
+                _sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    SubFedditPosts temp2 = new();
+                    temp2.PostId = reader.GetGuid("PostID");
+                    temp2.UserId = reader.GetGuid("UserID");
+                    temp2.PostTitle = reader.GetString("PostTitle");
+                    temp2.PostContent = reader.GetString("Content");
+                    temp2.DateCreated = reader.GetDateTime("DateCreated");
+                    temp.Add(temp2);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally { _sqlConnection.Close(); }
+            return temp;
+        }
     }
 }

@@ -40,6 +40,10 @@
                     <span>@comments.CommentContent</span>
                     <span>@comments.CurrentTime</span>
             }
+            @foreach(var posts in Model.postlists)
+            {
+                <span style="margin-top: 25px;">@</span>
+            }
         }
      
     </div>
