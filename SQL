@@ -1,0 +1,233 @@
+GO
+USE master;
+GO
+
+IF EXISTS(SELECT * FROM sysdatabases WHERE name = 'Feddit')
+ALTER DATABASE Feddit SET MULTI_USER WITH ROLLBACK IMMEDIATE
+DROP DATABASE Feddit
+GO
+
+CREATE DATABASE Feddit
+GO
+USE Feddit
+GO
+CREATE TABLE Users (
+    UserID uniqueidentifier PRIMARY KEY not null default newid(),
+    Mail nvarchar(200) not null,
+    Name varchar(70) not null,
+    Password nvarchar(100) not null, 
+    IsDeleted bit not null default 0,
+    SuperAdmin bit not null default 0
+);
+CREATE TABLE SubFeddits (
+	SubFedditId uniqueidentifier PRIMARY KEY not null default newid(),
+	SubFedditName nvarchar(75),
+	SubFedditCreatedAt Datetime,
+)
+CREATE TABLE SubFedditsPosts (
+	PostId uniqueidentifier Primary key not null default newid(),
+	UserId uniqueidentifier,
+	SubFedditId uniqueidentifier,
+	PicturePath nvarchar(max),
+	Title NVARCHAR(100) NOT NULL,
+    Content NVARCHAR(100) NOT NULL,
+    CreatedAt Datetime,
+	IsDeleted bit default 0,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+	FOREIGN KEY (SubFedditId) REFERENCES SubFeddits(SubFedditId)
+);
+CREATE TABLE Comments (
+    CommentID uniqueidentifier PRIMARY KEY default newid() NOT NULL,
+    PostID uniqueidentifier NOT NULL,
+    UserID uniqueidentifier NOT NULL,
+	CommentTitle nvarchar(75) NOT NULL,
+    Content nvarchar(500) NOT NULL,
+    CreatedAt Datetime,
+    FOREIGN KEY (PostID) REFERENCES SubFedditsPosts(PostId),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+CREATE TABLE Votes (
+    VoteID uniqueidentifier default newid() not null,
+    PostID uniqueidentifier not null,
+    CommentID uniqueidentifier not null,
+    UserID uniqueidentifier not null,
+    VoteType INT,
+    CreatedAt TIMESTAMP,
+    FOREIGN KEY (PostID) REFERENCES SubFeddits(SubFedditId),
+    FOREIGN KEY (CommentID) REFERENCES Comments(CommentID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+GO
+CREATE OR ALTER PROCEDURE spCreateUser
+@Mail nvarchar(500),
+@Name nvarchar(500),
+@Password Nvarchar(500)
+as 
+IF EXISTS(SELECT Mail from Users where Mail = @Mail)
+BEGIN
+	RAISERROR('UserExists',12,1)
+		RETURN
+			END
+BEGIN
+	INSERT INTO Users(Name, Mail, Password)
+		VALUES(@Name, @Mail, @Password)
+			END
+GO
+EXEC spCreateUser 'bobmongol@gmail.com', 'Phillip', '1234'
+GO
+CREATE OR ALTER PROCEDURE spGetUserInfoByUserEmail
+@Mail nvarchar(200)
+as
+begin
+SELECT * From Users
+where Mail = @Mail
+END
+GO
+CREATE OR ALTER PROCEDURE spUpdateUser
+    @UserID uniqueidentifier,
+    @Mail nvarchar(200),
+    @Name varchar(70),
+    @Password nvarchar(100),
+    @IsDeleted bit,
+    @SuperAdmin bit
+AS
+BEGIN
+    UPDATE Users
+    SET
+        Mail = @Mail,
+        Name = @Name,
+        Password = @Password,
+        IsDeleted = @IsDeleted,
+        SuperAdmin = @SuperAdmin
+    WHERE
+        UserID = @UserID;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE spDeleteUser
+@userid uniqueidentifier
+as
+begin
+update Users
+set IsDeleted = 1
+where UserID = @userid
+end
+GO
+
+CREATE OR ALTER PROCEDURE SPLoginUser
+@Mail nvarchar(200),
+@Password nvarchar(200)
+AS
+BEGIN
+SELECT * FROM Users
+WHERE @Mail = Mail and @Password = Password
+END
+GO
+
+CREATE OR ALTER PROCEDURE SPCreateSubFeddit
+@SubFedditName nvarchar(75),
+@SubFedditCreatedAt DateTime
+AS
+BEGIN
+INSERT INTO SubFeddits(SubFedditName, SubFedditCreatedAt)
+VALUES (@SubFedditName, @SubFedditCreatedAt)
+END
+GO
+
+CREATE OR ALTER PROCEDURE SPGetAllSubFeddits 
+as
+begin
+select * from SubFeddits
+end
+exec SPGetAllSubFeddits
+GO
+
+CREATE OR ALTER PROCEDURE SPAddSubFedditPost
+    @UserId uniqueidentifier,
+    @SubFedditId uniqueidentifier,
+    @Title nvarchar(100),
+    @Content nvarchar(100)
+AS
+BEGIN
+    INSERT INTO SubFedditsPosts (UserId, SubFedditId, Title, Content, CreatedAt)
+    VALUES (@UserId, @SubFedditId, @Title, @Content, GETDATE());
+END
+GO
+CREATE OR ALTER PROCEDURE SPGetAllSubFedditPosts
+	@SubFedditId uniqueidentifier
+AS
+BEGIN
+SELECT * FROM SubFedditsPosts
+WHERE SubFedditId = @SubFedditId
+END
+GO
+EXEC SPGetAllSubFedditPosts '054E404F-D657-41C9-B84D-F36C8C36DFCE'
+GO
+CREATE OR ALTER PROCEDURE SPGetSubFedditByName
+	@SubFedditName nvarchar(100)
+AS
+BEGIN
+SELECT * FROM SubFeddits WHERE SubFedditName = @SubFedditName
+END
+
+GO
+CREATE OR ALTER PROCEDURE SPAddComment
+    @PostID uniqueidentifier,
+    @UserID uniqueidentifier,
+	@CommentTitle nvarchar(75),
+    @Content nvarchar(500),
+    @CreatedAt datetime
+AS
+BEGIN
+    INSERT INTO Comments (CommentID, PostID, UserID, CommentTitle,  Content, CreatedAt)
+    VALUES (NEWID(), @PostID, @UserID, @CommentTitle, @Content, @CreatedAt);
+END
+EXEC SPAddComment 'DF42EAC3-2137-467B-B388-605757A1DFF2','68AFCBBA-280D-402F-876F-DABE87515483', 'mweeee', 'assss', '2008-11-11 13:23:44'
+
+GO
+CREATE OR ALTER PROCEDURE SPGetPostById
+@PostId uniqueidentifier
+as
+begin
+SELECT * FROM SubFedditsPosts WHERE @PostId = PostId
+END
+GO
+CREATE OR ALTER PROCEDURE SPGetAllCommentsOnPost
+@postid uniqueidentifier
+AS
+BEGIN
+	SELECT * FROM Comments 
+	WHERE @postid = PostID
+END
+GO
+CREATE OR ALTER PROCEDURE SPDeletePost
+@PostId uniqueidentifier,
+@UserId uniqueidentifier
+AS
+BEGIN
+update SubFedditsPosts
+SET IsDeleted = 1
+where @PostId = PostId and @UserId = UserId
+END
+GO
+CREATE OR ALTER PROCEDURE SPGetAllCommentsFromUser
+@userid uniqueidentifier
+AS
+BEGIN
+SELECT * FROM Comments
+WHERE UserID = @userid
+END
+exec SPGetAllCommentsFromUser '68AFCBBA-280D-402F-876F-DABE87515483'
+GO
+CREATE OR ALTER PROCEDURE SPUpdatePost
+@PostId uniqueidentifier,
+@Title nvarchar(100),
+@Content nvarchar(100)
+AS
+BEGIN
+UPDATE SubFedditsPosts
+SET Title = @Title, Content = @Content
+WHERE @PostId = PostId
+END
+ 
