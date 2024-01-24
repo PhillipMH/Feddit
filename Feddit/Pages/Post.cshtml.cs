@@ -2,6 +2,7 @@ using Feddit_Domain.Connections;
 using Feddit_Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Runtime.CompilerServices;
 
 namespace Feddit.Pages
 {
@@ -28,7 +29,11 @@ namespace Feddit.Pages
 
         [BindProperty]
         public DateTime DateCreated { get; set; }
+        [BindProperty]
         public List<Comments> Comments { get; set; }
+        [BindProperty]
+        public string Mail  { get; set; }
+        public Guid UserId { get; set; }
 
         public async Task OnGet()
         {
@@ -42,6 +47,13 @@ namespace Feddit.Pages
                 DateCreated = post.DateCreated;
             }
             Comments = await _connection.GetAllCommentsAsync(PostId);
+        }
+        public async Task OnPost()
+        {
+            Mail = HttpContext.Session.GetString("Mail");
+            Users founduser = await _connection.GetUserByMail(Mail);
+            UserId = founduser.UserId;
+            Comments comment = await _connection.CommentOnPost(PostId, UserId, Title, Content, DateTime.Now);
         }
     }
 

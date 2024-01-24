@@ -262,11 +262,12 @@ namespace Feddit_Domain.Connections
             finally { _sqlConnection.Close(); }
             return await Task.FromResult<SubFedditPosts>(null);
         }
-        public async Task<Comments> CommentOnPost(Guid postid, Guid userid, string content, DateTime createdat)
+        public async Task<Comments> CommentOnPost(Guid postid, Guid userid, string title, string content, DateTime createdat)
         {
             SqlCommand command = await MySqlCommand("SpAddComment");
             command.Parameters.AddWithValue("@PostID", postid);
             command.Parameters.AddWithValue("@UserID", userid);
+            command.Parameters.AddWithValue("@CommentTitle", title);
             command.Parameters.AddWithValue("@Content", content);
             command.Parameters.AddWithValue("@CreatedAt", createdat);
             try
@@ -282,11 +283,11 @@ namespace Feddit_Domain.Connections
             finally {_sqlConnection.Close(); }
             return new();
         }
-        public async Task<SubFedditPosts> AddPostToSubFeddit(Guid userid, Guid subfedditid, string title, string content )
+        public async Task<SubFedditPosts> AddPostToSubFeddit(Guid userId, Guid subFedditId, string title, string content )
         {
             SqlCommand command = await MySqlCommand("SPAddSubFedditPost");
-            command.Parameters.AddWithValue("@UserId", userid);
-            command.Parameters.AddWithValue("@SubFedditId", subfedditid);
+            command.Parameters.AddWithValue("@UserId", userId);
+            command.Parameters.AddWithValue("@SubFedditId", subFedditId);
             command.Parameters.AddWithValue("@Title",title);
             command.Parameters.AddWithValue("@Content", content );
             try
@@ -360,6 +361,48 @@ namespace Feddit_Domain.Connections
             }
             finally { _sqlConnection.Close(); }
             return temp;
+        }
+        public async Task<List<SubFedditPosts>> GetAllPostsFromSpecificUserAsync(Guid Userid)
+        {
+            List<SubFedditPosts> temp = new List<SubFedditPosts>();
+            SqlCommand command = await MySqlCommand("SPGetAllPostsFromUser");
+            command.Parameters.AddWithValue("@userid", Userid);
+            try
+            {
+                _sqlConnection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    SubFedditPosts temp2 = new();
+                    temp2.PostId = reader.GetGuid("PostID");
+                    temp2.UserId = reader.GetGuid("UserID");
+                    temp2.PostTitle = reader.GetString("Title");
+                    temp2.PostContent = reader.GetString("Content");
+                    temp2.DateCreated = reader.GetDateTime("CreatedAt");
+                    temp.Add(temp2);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally { _sqlConnection.Close(); }
+            return temp;
+        }
+        public async Task<SubFedditPosts> UpdatePost(SubFedditPosts post)
+        {
+            SqlCommand command = await MySqlCommand("SPUpdatePost");
+            command.Parameters.AddWithValue("@PostId", post.PostId);
+            command.Parameters.AddWithValue("@Title", post.PostTitle);
+            command.Parameters.AddWithValue("@Content", post.PostContent);
+            try
+            {
+                _sqlConnection.Open();
+                command.ExecuteNonQuery();
+            }
+            finally { _sqlConnection.Close(); }
+            return null;
         }
     }
 }
